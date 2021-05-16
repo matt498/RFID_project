@@ -36,7 +36,7 @@ void loop() {
 
       Serial.println();
       mfrc522.PICC_HaltA();
-      delay(5000); //TODO: sistemare organizzazione lettura RFID -> display print
+      delay(5000); //TODO: limita due letture consecutive. Serve riorganizzare lettura RFID -> display print
       lcd.clear();
     }
   }
