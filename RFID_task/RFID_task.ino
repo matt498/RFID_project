@@ -27,8 +27,31 @@ void setup(){
   delay(5000); //---- solo come prova!
   lcd.clear(); //pulisce display
 
+  xTaskCreate(
+  TaskReadRFID
+  ,  "RFID"   // A name just for humans
+  ,  128  // This stack size can be checked & adjusted by reading the Stack Highwater
+  ,  NULL
+  ,  2  // Priority, with 3 (configMAX_PRIORITIES - 1) being the highest, and 0 being the lowest.
+  ,  NULL );
+
+  xTaskCreate(
+  TaskDisplay
+  ,  "DisplayLCD"
+  ,  128  // Stack size
+  ,  NULL
+  ,  1  // Priority
+  ,  NULL );
+
+
 }
 
 void loop() {
-    
+}
+
+void TaskReadRFID( void *pvParameters ){
+}
+
+
+void TaskDisplay( void *pvParameters ){
 }
