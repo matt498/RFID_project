@@ -15,6 +15,9 @@ void TaskDisplay( void *pvParameters );
 LiquidCrystal_I2C lcd(0x27, 16, 2);
 MFRC522 mfrc522(SS_PIN, RST_PIN);
 
+SemaphoreHandle_t mutex;
+bool letturaRFID = false;
+
 void setup(){
   Serial.begin(9600);
   SPI.begin();
@@ -27,6 +30,11 @@ void setup(){
   lcd.print("RFID reading UID");
   delay(5000); //---- solo come prova!
   lcd.clear(); //pulisce display
+
+  mutex = xSemaphoreCreateMutex();
+  if (mutex != NULL) {
+    Serial.println("Mutex created");
+  }
 
   xTaskCreate(
   TaskReadRFID
@@ -52,25 +60,38 @@ void loop() {
 
 void TaskReadRFID( void *pvParameters ){
   for(;;){
-    if( mfrc522.PICC_IsNewCardPresent() ){
-      if( mfrc522.PICC_ReadCardSerial() ) {
-        Serial.print("Tag UID: ");
-        for(byte i = 0; i < mfrc522.uid.size; i++) {
-          Serial.print(mfrc522.uid.uidByte[i] < 0x10 ? "0" : " ");
-          
-          Serial.print(mfrc522.uid.uidByte[i], HEX);
+    if (xSemaphoreTake(mutex, 10) == pdTRUE){
+      if( mfrc522.PICC_IsNewCardPresent() ){
+        if( mfrc522.PICC_ReadCardSerial() ) {
+          letturaRFID = true;
+          Serial.print("Tag UID: ");
+          for(byte i = 0; i < mfrc522.uid.size; i++) {
+            Serial.print(mfrc522.uid.uidByte[i] < 0x10 ? "0" : " ");
+            
+            Serial.print(mfrc522.uid.uidByte[i], HEX);
+          }
+      
+          Serial.println();
+          mfrc522.PICC_HaltA();
+          delay(1500); //TODO: limita due letture consecutive. Serve riorganizzare lettura RFID -> display print
         }
-    
-        Serial.println();
-        mfrc522.PICC_HaltA();
-        delay(1500); //TODO: limita due letture consecutive. Serve riorganizzare lettura RFID -> display print
       }
+    xSemaphoreGive(mutex);
     }
+    vTaskDelay(1);
   }
 }
 
 
 void TaskDisplay( void *pvParameters ){
   for(;;){
+    if (xSemaphoreTake(mutex, 10) == pdTRUE){
+      if(letturaRFID == true){
+        Serial.println("visualizzazione su schermo OK");
+        letturaRFID = false;
+      }
+    xSemaphoreGive(mutex);
+    }
+    vTaskDelay(1);
   }
 }
