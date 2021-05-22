@@ -7,3 +7,6 @@
 #define SS_PIN 53
 #define RST_PIN 49
 
+//definizione task
+void TaskReadRFID( void *pvParameters );
+void TaskDisplay( void *pvParameters );
