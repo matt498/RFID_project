@@ -50,8 +50,26 @@ void loop() {
 }
 
 void TaskReadRFID( void *pvParameters ){
+  for(;;){
+    if( mfrc522.PICC_IsNewCardPresent() ){
+      if( mfrc522.PICC_ReadCardSerial() ) {
+        Serial.print("Tag UID: ");
+        for(byte i = 0; i < mfrc522.uid.size; i++) {
+          Serial.print(mfrc522.uid.uidByte[i] < 0x10 ? "0" : " ");
+          
+          Serial.print(mfrc522.uid.uidByte[i], HEX);
+        }
+    
+        Serial.println();
+        mfrc522.PICC_HaltA();
+        delay(1500); //TODO: limita due letture consecutive. Serve riorganizzare lettura RFID -> display print
+      }
+    }
+  }
 }
 
 
 void TaskDisplay( void *pvParameters ){
+  for(;;){
+  }
 }
