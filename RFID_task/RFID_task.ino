@@ -2,6 +2,7 @@
 #include <MFRC522.h>
 #include <LiquidCrystal_I2C.h>
 #include <Arduino_FreeRTOS.h>
+#include <semphr.h>
 
 //definizione pin
 #define SS_PIN 53
