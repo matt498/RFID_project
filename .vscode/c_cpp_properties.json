@@ -17,8 +17,11 @@
             "includePath": [
                 "/Users/matteoferrari/Desktop/Arduino/Arduino.app/Contents/Java/hardware/arduino/avr/cores/arduino",
                 "/Users/matteoferrari/Desktop/Arduino/Arduino.app/Contents/Java/hardware/arduino/avr/variants/mega",
+                "/Users/matteoferrari/Documents/Arduino/libraries/FreeRTOS/src",
                 "/Users/matteoferrari/Desktop/Arduino/Arduino.app/Contents/Java/hardware/arduino/avr/libraries/SPI/src",
                 "/Users/matteoferrari/Documents/Arduino/libraries/MFRC522/src",
+                "/Users/matteoferrari/Documents/Arduino/libraries/LiquidCrystal_I2C",
+                "/Users/matteoferrari/Desktop/Arduino/Arduino.app/Contents/Java/hardware/arduino/avr/libraries/Wire/src",
                 "/Users/matteoferrari/Desktop/Arduino/Arduino.app/Contents/Java/hardware/tools/avr/lib/gcc/avr/7.3.0/include",
                 "/Users/matteoferrari/Desktop/Arduino/Arduino.app/Contents/Java/hardware/tools/avr/lib/gcc/avr/7.3.0/include-fixed",
                 "/Users/matteoferrari/Desktop/Arduino/Arduino.app/Contents/Java/hardware/tools/avr/avr/include"

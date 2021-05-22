@@ -1,5 +1,6 @@
 {
     "configuration": "cpu=atmega2560",
     "board": "arduino:avr:mega",
-    "sketch": "RFID_basicDetection.ino"
+    "sketch": "RFID_basicDetection.ino",
+    "port": "/dev/tty.usbmodem11301"
 }
