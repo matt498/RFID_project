@@ -10,3 +10,18 @@
 //definizione task
 void TaskReadRFID( void *pvParameters );
 void TaskDisplay( void *pvParameters );
+
+void setup(){
+  Serial.begin(9600);
+  SPI.begin();
+  mfrc522.PCD_Init(); //init MFRC522
+  Serial.println("RFID reading UID");
+
+  //Display
+  lcd.init(); //inizializza
+  lcd.backlight(); //accende retroilluminazione
+  lcd.print("RFID reading UID");
+  delay(5000); //---- solo come prova!
+  lcd.clear(); //pulisce display
+  
+}
