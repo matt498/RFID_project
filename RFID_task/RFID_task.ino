@@ -158,7 +158,7 @@ void TaskReadRFID(void *pvParameters)
 
           Serial.println();
 
-          mfrc522.PICC_HaltA();
+          mfrc522.PICC_HaltA(); //Instructs the reader in state ACTIVE to go to state HALT
           delay(1000); //TODO: tweak param not to limit two readings in a row -> display print
         }
       }
