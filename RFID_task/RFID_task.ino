@@ -126,27 +126,27 @@ void TaskReadRFID(void *pvParameters)
           {
             bufferTag[i] = mfrc522.uid.uidByte[i]; //Save the readed UID on buffer
 
-            Serial.print(mfrc522.uid.uidByte[i] < 0x10 ? "0" : " "); //Print formatted UID on serial
+            Serial.print((mfrc522.uid.uidByte[i] < 0x10) ? "0" : " "); //Print formatted UID on serial
             Serial.print(mfrc522.uid.uidByte[i], HEX);
           }
 
           Serial.println();
 
-          if (arrayByteCard[0] == bufferTag[0] &&
-              arrayByteCard[1] == bufferTag[1] &&
-              arrayByteCard[2] == bufferTag[2] &&
-              arrayByteCard[3] == bufferTag[3]) //Check if the card is an authorised one
+          if ((arrayByteCard[0] == bufferTag[0]) &&
+              (arrayByteCard[1] == bufferTag[1]) &&
+              (arrayByteCard[2] == bufferTag[2]) &&
+              (arrayByteCard[3] == bufferTag[3])) //Check if the card is an authorised one
           {
             cardCount++; //A card is inside the car
 
-            if (cardCount % 2 == 1)
+            if ((cardCount % 2) == 1)
             {
               cardAuth = true;              //Access granted
               digitalWrite(rangeLED, HIGH); //The rangeLED is ON
 
               Serial.println("OK: card in range");
             }
-            if (cardCount % 2 == 0)
+            if ((cardCount % 2) == 0)
             {
               cardAuth = false;            //Access revoked
               digitalWrite(rangeLED, LOW); //The rangeLED is OFF
@@ -179,7 +179,7 @@ void TaskDisplay(void *pvParameters)
         lcd.print("Tag UID: ");
         for (byte i = 0; i < 4; i++) //Print formatted UID on external display
         {
-          lcd.print(bufferTag[i] < 0x10 ? "0" : " ");
+          lcd.print((bufferTag[i] < 0x10) ? "0" : " ");
           lcd.print(bufferTag[i], HEX);
         }
       }
