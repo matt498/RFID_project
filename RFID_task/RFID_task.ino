@@ -117,9 +117,9 @@ void TaskReadRFID(void *pvParameters)
   {
     if (xSemaphoreTake(mutex, 10) == pdTRUE) //We need to check for mutual exclusion
     {
-      if (mfrc522.PICC_IsNewCardPresent()) //Vendor-specific function that tells if there's a card within the range
+      if (mfrc522.PICC_IsNewCardPresent() == true) //Vendor-specific function that tells if there's a card within the range
       {
-        if (mfrc522.PICC_ReadCardSerial()) //Vendor-specific function that tells if the reading part was successful
+        if (mfrc522.PICC_ReadCardSerial() == true) //Vendor-specific function that tells if the reading part was successful
         {
           Serial.print("Tag UID: ");
           for (byte i = 0; i < mfrc522.uid.size; i++)
