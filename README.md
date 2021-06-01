@@ -1,6 +1,6 @@
 # RFID reading for cars
 
-> An Arduino Mega project to develop a basic keyless entry model for cars
+> An Arduino Mega project that aims to develop a simulated keyless-entry model for cars.
 
 *Contributors: Davide Ferrari, Matteo Ferrari, Mattia Trabucco*
 
