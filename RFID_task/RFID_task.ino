@@ -5,42 +5,42 @@
 #include <semphr.h>
 #include <Button.h>
 
-//definizione pin
+//PIN definitions
 #define SS_PIN 53
 #define RST_PIN 49
 #define closeLED 8
 #define openLED 9
 #define rangeLED 10
 
-//definizione task
+//Buttons definitions
+const int openPin = 2;
+const int closePin = 3;
+
+//Task definitions
 void TaskReadRFID( void *pvParameters );
 void TaskDisplay( void *pvParameters );
 void TaskOpenButton( void *pvParameters );
 void TaskCloseButton( void *pvParameters );
 
+//Display requirements
 LiquidCrystal_I2C lcd(0x27, 16, 2);
+
+//RFID reader requirements
 MFRC522 mfrc522(SS_PIN, RST_PIN);
 
+//Global variables
 SemaphoreHandle_t mutex;
-bool autorizzazioneCarta = false;
-//********
-//false = carta NON nella portata del lettore RFID
-//true = carta nella portata del lettore RFID
-//bool cardState = false
+bool autorizzazioneCarta = false; //false = card not within the range of the RFID reader // true = card is near the RFID reader
 
-//Button def
-const int openPin = 2;
-const int closePin = 3;
-
-//codice carta registrata
+//Authorized card 
 byte arrayByteCard[4] = {
-  0xE9,
-  0xBB,
-  0xBB,
-  0xB8
+  0x3A,
+  0x59,
+  0xC8,
+  0x80
   };
 
-//buffer TAG CARD
+//Buffer to store the readed CARD
 byte bufferTag[4];
 
 int contatoreCarta = 0;
@@ -49,63 +49,67 @@ void setup(){
   Serial.begin(9600);
   SPI.begin();
   mfrc522.PCD_Init(); //init MFRC522
-  Serial.println("RFID reading UID");
+  
+  Serial.println("RFID card reader");
 
-  //Display
-  lcd.init(); //inizializza
-  lcd.backlight(); //accende retroilluminazione
-  lcd.print("RFID reading UID");
-  delay(5000); //---- solo come prova!
-  lcd.clear(); //pulisce display
+  //Display setup:
+  lcd.init(); //initialize
+  lcd.backlight(); //turn on backlight
+  lcd.print("RFID card reader");
+  delay(3000); //TODO 
+  lcd.clear(); //clear display
 
-  //Button
+  //Button setup:
   pinMode(openPin, INPUT);
   pinMode(closePin, INPUT);
 
-  //LED
+  //LED setup:
   pinMode(closeLED, OUTPUT);
   pinMode(openLED, OUTPUT);
   pinMode(rangeLED, OUTPUT);
 
+  //Mutex setup:
   mutex = xSemaphoreCreateMutex();
   if (mutex != NULL) {
     Serial.println("Mutex created");
   }
 
+  //Task creation:
   xTaskCreate(
   TaskReadRFID
-  ,  "RFID"   // A name just for humans
-  ,  128  // This stack size can be checked & adjusted by reading the Stack Highwater
+  ,  "RFID"   //Task for managing RFID reader
+  ,  128  //stack size
   ,  NULL
-  ,  2  // Priority, with 3 (configMAX_PRIORITIES - 1) being the highest, and 0 being the lowest.
+  ,  2  //PRIORITY, with 3 (configMAX_PRIORITIES - 1) being the highest, and 0 being the lowest.
   ,  NULL );
 
   xTaskCreate(
   TaskDisplay
-  ,  "DisplayLCD"
-  ,  128  // Stack size
+  ,  "DisplayLCD" //Task for the display
+  ,  128  //stack size
   ,  NULL
-  ,  1  // Priority
+  ,  1  //PRIORITY
   ,  NULL );
 
     xTaskCreate(
   TaskOpenButton
-  ,  "OpenButton"
-  ,  128  // Stack size
+  ,  "OpenButton" //Task for the button that opens the car
+  ,  128  //stack size
   ,  NULL
-  ,  1  // Priority
+  ,  1  //PRIORITY
   ,  NULL );
 
   xTaskCreate(
   TaskCloseButton
-  ,  "CloseButton"
-  ,  128  // Stack size
+  ,  "CloseButton" //Task for the button that closes the car
+  ,  128  //stack size
   ,  NULL
-  ,  1  // Priority
+  ,  1  //PRIORITY
   ,  NULL );
 
 }
 
+//Not required since we're using FreeRTOS
 void loop() {
 }
 
