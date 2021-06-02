@@ -60,8 +60,6 @@ void setup()
   lcd.init();                    //initialize
   lcd.backlight();               //turn on backlight
   lcd.print("RFID card reader"); //display startup message
-  delay(3000);                   //TODO
-  lcd.clear();                   //clear display
 
   //Button setup:
   pinMode(openPin, INPUT);
@@ -184,6 +182,7 @@ void TaskDisplay(void)
     {
       if ((cardAuth == true) && (lcdPrint == true))
       {
+        lcd.clear();
         lcdPrint = false;
         lcd.setCursor(0,0);
         lcd.print("Tag UID: ");
