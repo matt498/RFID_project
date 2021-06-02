@@ -17,10 +17,10 @@ const int openPin = 2;
 const int closePin = 3;
 
 //Task definitions
-void TaskReadRFID(void *pvParameters);
-void TaskDisplay(void *pvParameters);
-void TaskOpenButton(void *pvParameters);
-void TaskCloseButton(void *pvParameters);
+void TaskReadRFID(void);
+void TaskDisplay(void);
+void TaskOpenButton(void);
+void TaskCloseButton(void);
 
 //Display requirements
 LiquidCrystal_I2C lcd(0x27, 16, 2);
@@ -111,7 +111,7 @@ void loop()
 }
 
 //Task for managing RFID reader:
-void TaskReadRFID(void *pvParameters)
+void TaskReadRFID(void)
 {
   for (;;)
   {
@@ -168,7 +168,7 @@ void TaskReadRFID(void *pvParameters)
   }
 }
 
-void TaskDisplay(void *pvParameters)
+void TaskDisplay(void)
 {
   for (;;)
   {
@@ -189,7 +189,7 @@ void TaskDisplay(void *pvParameters)
   }
 }
 
-void TaskOpenButton(void *pvParameters)
+void TaskOpenButton(void)
 {
   for (;;)
   {
@@ -213,7 +213,7 @@ void TaskOpenButton(void *pvParameters)
   }
 }
 
-void TaskCloseButton(void *pvParameters)
+void TaskCloseButton(void)
 {
   for (;;)
   {
