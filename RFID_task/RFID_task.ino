@@ -32,10 +32,10 @@ MFRC522 mfrc522(SS_PIN, RST_PIN);
 SemaphoreHandle_t mutex;
 bool cardAuth = false; //false = card not within the range of the RFID reader. true = card is near the RFID reader.
 byte bufferTag[4];     //buffer to store the readed CARD
-int cardCount = 0;
-bool lcdPrint = true;
+int cardCount = 0;     //card in range
+bool lcdPrint = true;  //true = it's ok to print on display. false = it's not.
 
-//Authorized card
+//Authorized MIFARE classic NFC card
 byte arrayByteCard[4] = {
     0x3A,
     0x59,
@@ -52,7 +52,7 @@ void setup()
 {
   Serial.begin(9600);
   SPI.begin();
-  mfrc522.PCD_Init(); //init MFRC522
+  mfrc522.PCD_Init(); //init MFRC522 NFC reader
 
   Serial.println("RFID card reader");
 
@@ -74,7 +74,7 @@ void setup()
   mutex = xSemaphoreCreateMutex();
   if (mutex != NULL)
   {
-    Serial.println("Mutex created");
+    Serial.println("Mutex successfully created");
   }
 
   //Task creation:
@@ -140,9 +140,9 @@ void TaskReadRFID(void)
           if ((arrayByteCard[0] == bufferTag[0]) &&
               (arrayByteCard[1] == bufferTag[1]) &&
               (arrayByteCard[2] == bufferTag[2]) &&
-              (arrayByteCard[3] == bufferTag[3])) //Check if the card is an authorised one
+              (arrayByteCard[3] == bufferTag[3])) //Check if the card is the authorised one
           {
-            cardCount++; //A card is inside the car
+            cardCount++; //The card is inside the car
 
             if ((cardCount % 2) == 1)
             {
@@ -157,7 +157,7 @@ void TaskReadRFID(void)
               digitalWrite(rangeLED, LOW); //The rangeLED is OFF
               cardCount = 0;               //Reset the counter
               lcdPrint = true;             //Reset the flag for lcd printing
-              lcd.clear();
+              lcd.clear();                 //Clear the display
 
               Serial.println("ERR: card out of range");
             }
@@ -178,22 +178,24 @@ void TaskDisplay(void)
 {
   for (;;)
   {
-    if (xSemaphoreTake(mutex, 10) == pdTRUE)
+    if (xSemaphoreTake(mutex, 10) == pdTRUE) //We need to check for mutual exclusion
     {
-      if ((cardAuth == true) && (lcdPrint == true))
+      if ((cardAuth == true) && (lcdPrint == true)) //If card is in range and there's need for printing
       {
-        lcd.clear();
-        lcdPrint = false;
-        lcd.setCursor(0,0);
-        lcd.print("Tag UID: ");
-        lcd.setCursor(0,1);
+        lcdPrint = false; //Set the flag for next lcd printing
+
+        lcd.clear();            //Clear display
+        lcd.setCursor(0, 0);    //Write on the first row
+        lcd.print("Tag UID: "); //Display title
+        lcd.setCursor(0, 1);    //Write on the first row
+
         for (byte i = 0; i < 4; i++) //Print formatted UID on external display
         {
           lcd.print((bufferTag[i] < 0x10) ? "0" : " ");
           lcd.print(bufferTag[i], HEX);
         }
       }
-      xSemaphoreGive(mutex);
+      xSemaphoreGive(mutex); //Release mutex
     }
     vTaskDelay(1); //TODO: tweak param
   }
@@ -203,11 +205,11 @@ void TaskOpenButton(void)
 {
   for (;;)
   {
-    if (xSemaphoreTake(mutex, 10) == pdTRUE)
+    if (xSemaphoreTake(mutex, 10) == pdTRUE) //We need to check for mutual exclusion
     {
       if (cardAuth == true) //If card is in range
       {
-        int buttonState = digitalRead(openPin);
+        int buttonState = digitalRead(openPin); //Read the state of the button
 
         if (buttonState == HIGH) //If open button was pressed
         {
@@ -217,9 +219,9 @@ void TaskOpenButton(void)
           Serial.println("OPEN button pressed");
         }
       }
-      xSemaphoreGive(mutex);
+      xSemaphoreGive(mutex); //Release mutex
     }
-    vTaskDelay(1);
+    vTaskDelay(1); //TODO: tweak param
   }
 }
 
@@ -227,11 +229,11 @@ void TaskCloseButton(void)
 {
   for (;;)
   {
-    if (xSemaphoreTake(mutex, 10) == pdTRUE)
+    if (xSemaphoreTake(mutex, 10) == pdTRUE) //We need to check for mutual exclusion
     {
       if (cardAuth == true) //If card is in range
       {
-        int buttonState = digitalRead(closePin);
+        int buttonState = digitalRead(closePin); //Read the state of the button
 
         if (buttonState == HIGH) //If close button was pressed
         {
@@ -241,8 +243,8 @@ void TaskCloseButton(void)
           Serial.println("CLOSE button pressed");
         }
       }
-      xSemaphoreGive(mutex);
+      xSemaphoreGive(mutex); //Release mutex
     }
-    vTaskDelay(1);
+    vTaskDelay(1); //TODO: tweak param
   }
 }
