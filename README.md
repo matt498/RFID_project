@@ -4,4 +4,6 @@
 
 *Contributors: Davide Ferrari, Matteo Ferrari, Mattia Trabucco*
 
+![piedinatura scheda Arduino Mega](https://github.com/matt498/RFID_project/blob/master/circuitRFID.png)
+
 *Made for [SERT](https://hipert.unimore.it/).*
