@@ -33,6 +33,7 @@ SemaphoreHandle_t mutex;
 bool cardAuth = false; //false = card not within the range of the RFID reader. true = card is near the RFID reader.
 byte bufferTag[4];     //buffer to store the readed CARD
 int cardCount = 0;
+bool lcdPrint = true;
 
 //Authorized card
 byte arrayByteCard[4] = {
@@ -157,6 +158,8 @@ void TaskReadRFID(void)
               cardAuth = false;            //Access revoked
               digitalWrite(rangeLED, LOW); //The rangeLED is OFF
               cardCount = 0;               //Reset the counter
+              lcdPrint = true;             //Reset the flag for lcd printing
+              lcd.clear();
 
               Serial.println("ERR: card out of range");
             }
@@ -165,7 +168,6 @@ void TaskReadRFID(void)
           Serial.println();
 
           mfrc522.PICC_HaltA(); //Instructs the reader in state ACTIVE to go to state HALT
-          delay(1000); //TODO: tweak param not to limit two readings in a row -> display print
         }
       }
       xSemaphoreGive(mutex); //Release mutex
@@ -180,9 +182,12 @@ void TaskDisplay(void)
   {
     if (xSemaphoreTake(mutex, 10) == pdTRUE)
     {
-      if (cardAuth == true)
+      if ((cardAuth == true) && (lcdPrint == true))
       {
+        lcdPrint = false;
+        lcd.setCursor(0,0);
         lcd.print("Tag UID: ");
+        lcd.setCursor(0,1);
         for (byte i = 0; i < 4; i++) //Print formatted UID on external display
         {
           lcd.print((bufferTag[i] < 0x10) ? "0" : " ");
