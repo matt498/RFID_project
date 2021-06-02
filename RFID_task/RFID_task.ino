@@ -41,6 +41,12 @@ byte arrayByteCard[4] = {
     0xC8,
     0x80};
 
+/* Authorized cards
+Davide: A0 9F 8C 32
+Matteo: E9 BB BB B8
+Mattia: 3A 59 C8 80
+*/
+
 void setup()
 {
   Serial.begin(9600);
