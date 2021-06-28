@@ -37,10 +37,10 @@ bool lcdPrint = true;  //true = it's ok to print on display. false = it's not.
 
 //Authorized MIFARE classic NFC card
 byte arrayByteCard[4] = {
-    0x3A,
-    0x59,
-    0xC8,
-    0x80};
+    0xA0,
+    0x9F,
+    0x8C,
+    0x32};
 
 /* Authorized cards
 Davide: A0 9F 8C 32
@@ -69,6 +69,7 @@ void setup()
   pinMode(closeLED, OUTPUT);
   pinMode(openLED, OUTPUT);
   pinMode(rangeLED, OUTPUT);
+
 
   //Mutex setup:
   mutex = xSemaphoreCreateMutex();
@@ -159,7 +160,7 @@ void TaskReadRFID(void)
               lcdPrint = true;             //Reset the flag for lcd printing
               lcd.clear();                 //Clear the display
 
-              Serial.println("ERR: card out of range");
+              Serial.println("LOG: card out of range");
             }
           }
 
