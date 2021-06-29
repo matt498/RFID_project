@@ -5,4 +5,4 @@
 *Contributors: Davide Ferrari, Matteo Ferrari, Mattia Trabucco*
 
 # Piedinatura
-![piedinatura scheda Arduino Mega](https://github.com/matt498/RFID_project/blob/master/ArduinoSchematic.jpeg)
+![piedinatura scheda Arduino Mega](https://github.com/matt498/RFID_project/blob/master/newSchematicRFID.jpg)
