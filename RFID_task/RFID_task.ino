@@ -301,7 +301,7 @@ void TaskVibration(void)
 
         Serial.println(val);
 
-        if (xTaskGetTickCount() - tickStart > tickVALUE && tickStart != 0) //After a certain number of ticks the alarm stops automatically
+        if (((xTaskGetTickCount() - tickStart) > tickVALUE) && (tickStart != 0)) //After a certain number of ticks the alarm stops automatically
         {
           noTone(buzzer_PIN); //Stop the beeping
           tickStart = 0;      //Reset the relative tick counter
@@ -309,7 +309,7 @@ void TaskVibration(void)
           Serial.println(xTaskGetTickCount());
         }
 
-        if (val == 1 && tickStart == 0) //If there's a vibration detected
+        if ((val == 1) && (tickStart == 0)) //If there's a vibration detected
         {
           tone(buzzer_PIN, toneHERTZ);     //Start the beeping
           tickStart = xTaskGetTickCount(); //Set the relative tick counter to the current tick value
