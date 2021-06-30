@@ -78,6 +78,9 @@ void setup()
   pinMode(openLED, OUTPUT);
   pinMode(rangeLED, OUTPUT);
 
+  //Initial state of the car: CLOSED (red LED ON)
+  digitalWrite(closeLED, HIGH);
+
   //Vibration sensor setup:
   pinMode(vibration_PIN, INPUT);
 
