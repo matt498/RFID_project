@@ -8,11 +8,15 @@
 //PIN definitions
 #define SS_PIN 53
 #define RST_PIN 49
+#define vibration_PIN 7
+#define buzzer_PIN 11
 #define closeLED 8
 #define openLED 9
 #define rangeLED 10
-#define vibration_PIN 7
-#define buzzer_PIN 11
+
+//Alarm definitions
+#define tickVALUE 80 //Auto stop value in tick counts
+#define toneHERTZ 500 //Frequency for the buzzer tone
 
 //Buttons definitions
 const int openPin = 2;
@@ -37,6 +41,7 @@ bool cardAuth = false; //false = card not within the range of the RFID reader. t
 byte bufferTag[4];     //buffer to store the readed CARD
 int cardCount = 0;     //card in range
 bool lcdPrint = true;  //true = it's ok to print on display. false = it's not.
+long start = 0;        //relative counter for system tick
 
 //Authorized MIFARE classic NFC card
 byte arrayByteCard[4] = {
@@ -167,6 +172,9 @@ void TaskReadRFID(void)
               cardAuth = true;              //Access granted
               digitalWrite(rangeLED, HIGH); //The rangeLED is ON
 
+              noTone(buzzer_PIN);           //Turn OFF the buzzer
+              start = 0;                    //Reset to zero the relative counter
+
               Serial.println("OK: card in range");
             }
             if ((cardCount % 2) == 0)
@@ -275,11 +283,23 @@ void TaskVibration(void)
     { 
       if (cardAuth == false) //If card is not in range
       {
-        int val = digitalRead(vibration_PIN);
+        int val = digitalRead(vibration_PIN); //Read the value from the sensor
+
         Serial.println(val);
-          
-        Serial.println(xTaskGetTickCount());
-               
+
+        if(xTaskGetTickCount() - start > tickVALUE && start != 0) { //After a certain number of ticks the alarm stops automatically
+          noTone(buzzer_PIN); //Stop the beeping
+          start = 0; //Reset the relative tick counter
+
+          Serial.println(xTaskGetTickCount());
+        }
+        
+        if(val == 1 && start == 0) { //If there's a vibration detected
+          tone(buzzer_PIN, toneHERTZ); //Start the beeping
+          start = xTaskGetTickCount(); //Set the relative tick counter to the current tick value
+
+          Serial.println(start);
+        }       
       }
       xSemaphoreGive(mutex); //Release mutex
     }
