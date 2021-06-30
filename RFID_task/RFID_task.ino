@@ -11,6 +11,8 @@
 #define closeLED 8
 #define openLED 9
 #define rangeLED 10
+#define vibration_PIN 7
+#define buzzer_PIN 11
 
 //Buttons definitions
 const int openPin = 2;
@@ -21,6 +23,7 @@ void TaskReadRFID(void);
 void TaskDisplay(void);
 void TaskOpenButton(void);
 void TaskCloseButton(void);
+void TaskVibration(void);
 
 //Display requirements
 LiquidCrystal_I2C lcd(0x27, 16, 2);
@@ -70,6 +73,11 @@ void setup()
   pinMode(openLED, OUTPUT);
   pinMode(rangeLED, OUTPUT);
 
+  //Vibration sensor setup:
+  pinMode(vibration_PIN, INPUT);
+
+  //Buzzer setup
+  pinMode(buzzer_PIN, OUTPUT);
 
   //Mutex setup:
   mutex = xSemaphoreCreateMutex();
@@ -85,6 +93,14 @@ void setup()
       128,    //stack size
       NULL,
       2, //PRIORITY, with 3 (configMAX_PRIORITIES - 1) being the highest, and 0 being the lowest.
+      NULL);
+
+  xTaskCreate(
+      TaskVibration, 
+      "VibrationSensor", //Task for the vibration sensor
+      128,               //stack size
+      NULL,
+      2, //PRIORITY
       NULL);
 
   xTaskCreate(
@@ -104,7 +120,8 @@ void setup()
       NULL);
 
   xTaskCreate(
-      TaskCloseButton, "CloseButton", //Task for the button that closes the car
+      TaskCloseButton,
+      "CloseButton", //Task for the button that closes the car
       128,                            //stack size
       NULL,
       1, //PRIORITY
@@ -247,5 +264,25 @@ void TaskCloseButton(void)
       xSemaphoreGive(mutex); //Release mutex
     }
     vTaskDelay(1); //TODO: tweak param
+  }
+}
+
+void TaskVibration(void)
+{
+  for (;;)
+  {
+    if (xSemaphoreTake(mutex, 10) == pdTRUE) //We need to check for mutual exclusion
+    { 
+      if (cardAuth == false) //If card is not in range
+      {
+        int val = digitalRead(vibration_PIN);
+        Serial.println(val);
+          
+        Serial.println(xTaskGetTickCount());
+               
+      }
+      xSemaphoreGive(mutex); //Release mutex
+    }
+    vTaskDelay(1);
   }
 }
