@@ -1,6 +1,6 @@
-# Gestore portiera auto con lettore carta NFC e rilevamento urti
+# Accesso keyless per auto con lettore NFC e rilevamento urti
 
-> An Arduino Mega project that aims to develop a simulated keyless-entry model for cars with an additional impact detection system.
+> Progetto Arduino Mega per la gestione dell'accesso keyless ad un'automobile attraverso un lettore NFC che integra un allarme basato sul rilevamento degli urti.
 
 *Autori: Davide Ferrari, Matteo Ferrari, Mattia Trabucco*
 
