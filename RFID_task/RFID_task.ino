@@ -41,7 +41,7 @@ bool cardAuth = false; //false = card not within the range of the RFID reader. t
 byte bufferTag[4];     //buffer to store the readed CARD
 int cardCount = 0;     //card in range
 bool lcdPrint = true;  //true = it's ok to print NFC UID on display. false = it's not.
-long start = 0;        //relative counter for system tick
+long tickStart = 0;        //relative counter for system tick
 bool lcdImpact = false; //true = it's ok to print alarm message on display. false = it's not.
 
 //Authorized MIFARE classic NFC card
@@ -177,7 +177,7 @@ void TaskReadRFID(void)
               digitalWrite(rangeLED, HIGH); //The rangeLED is ON
 
               noTone(buzzer_PIN);           //Turn OFF the buzzer
-              start = 0;                    //Reset to zero the relative counter
+              tickStart = 0;                    //Reset to zero the relative counter
 
               Serial.println("OK: card in range");
             }
@@ -301,22 +301,22 @@ void TaskVibration(void)
 
         Serial.println(val);
 
-        if(xTaskGetTickCount() - start > tickVALUE && start != 0) //After a certain number of ticks the alarm stops automatically
+        if(xTaskGetTickCount() - tickStart > tickVALUE && tickStart != 0) //After a certain number of ticks the alarm stops automatically
         {
           noTone(buzzer_PIN); //Stop the beeping
-          start = 0; //Reset the relative tick counter
+          tickStart = 0; //Reset the relative tick counter
 
           Serial.println(xTaskGetTickCount());
         }
         
-        if(val == 1 && start == 0) //If there's a vibration detected
+        if(val == 1 && tickStart == 0) //If there's a vibration detected
         {
           tone(buzzer_PIN, toneHERTZ); //Start the beeping
-          start = xTaskGetTickCount(); //Set the relative tick counter to the current tick value
+          tickStart = xTaskGetTickCount(); //Set the relative tick counter to the current tick value
 
           lcdImpact = true; //Set the flag for printing on display
 
-          Serial.println(start);
+          Serial.println(tickStart);
         }       
       }
       xSemaphoreGive(mutex); //Release mutex
