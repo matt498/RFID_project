@@ -40,8 +40,9 @@ SemaphoreHandle_t mutex;
 bool cardAuth = false; //false = card not within the range of the RFID reader. true = card is near the RFID reader.
 byte bufferTag[4];     //buffer to store the readed CARD
 int cardCount = 0;     //card in range
-bool lcdPrint = true;  //true = it's ok to print on display. false = it's not.
+bool lcdPrint = true;  //true = it's ok to print NFC UID on display. false = it's not.
 long start = 0;        //relative counter for system tick
+bool lcdImpact = false; //true = it's ok to print alarm message on display. false = it's not.
 
 //Authorized MIFARE classic NFC card
 byte arrayByteCard[4] = {
@@ -209,9 +210,9 @@ void TaskDisplay(void)
   {
     if (xSemaphoreTake(mutex, 10) == pdTRUE) //We need to check for mutual exclusion
     {
-      if ((cardAuth == true) && (lcdPrint == true)) //If card is in range and there's need for printing
+      if ((cardAuth == true) && (lcdPrint == true)) //If card is in range and there's need for printing UID
       {
-        lcdPrint = false; //Set the flag for next lcd printing
+        lcdPrint = false; //Set the flag for next lcd printing (UID)
 
         lcd.clear();            //Clear display
         lcd.setCursor(0, 0);    //Write on the first row
@@ -224,6 +225,16 @@ void TaskDisplay(void)
           lcd.print(bufferTag[i], HEX);
         }
       }
+
+      if (lcdImpact == true) //If there's need for printing the impact alarm message
+      { 
+        lcdImpact = false;   //Set the flag for next lcd printing (alarm)
+
+        lcd.clear();         //Clear display
+        lcd.setCursor(0, 0); //Write on the first row
+        lcd.print("Impact alarm!"); //Print the alarm massage on external display
+      }
+
       xSemaphoreGive(mutex); //Release mutex
     }
     vTaskDelay(1); //TODO: tweak param
@@ -290,16 +301,20 @@ void TaskVibration(void)
 
         Serial.println(val);
 
-        if(xTaskGetTickCount() - start > tickVALUE && start != 0) { //After a certain number of ticks the alarm stops automatically
+        if(xTaskGetTickCount() - start > tickVALUE && start != 0) //After a certain number of ticks the alarm stops automatically
+        {
           noTone(buzzer_PIN); //Stop the beeping
           start = 0; //Reset the relative tick counter
 
           Serial.println(xTaskGetTickCount());
         }
         
-        if(val == 1 && start == 0) { //If there's a vibration detected
+        if(val == 1 && start == 0) //If there's a vibration detected
+        {
           tone(buzzer_PIN, toneHERTZ); //Start the beeping
           start = xTaskGetTickCount(); //Set the relative tick counter to the current tick value
+
+          lcdImpact = true; //Set the flag for printing on display
 
           Serial.println(start);
         }       
