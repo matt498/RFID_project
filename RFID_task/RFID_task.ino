@@ -216,8 +216,8 @@ void TaskDisplay(void)
 
         lcd.clear();            //Clear display
         lcd.setCursor(0, 0);    //Write on the first row
-        lcd.print("Tag UID: "); //Display title
-        lcd.setCursor(0, 1);    //Write on the first row
+        lcd.print("Tag UID: "); //Print title on external display
+        lcd.setCursor(0, 1);    //Write on the second row
 
         for (byte i = 0; i < 4; i++) //Print formatted UID on external display
         {
