@@ -1,16 +1,16 @@
-# RFID reading for cars
+# Gestore portiera auto con lettore carta NFC e rilevamento urti
 
 > An Arduino Mega project that aims to develop a simulated keyless-entry model for cars with an additional impact detection system.
 
-*Contributors: Davide Ferrari, Matteo Ferrari, Mattia Trabucco*
+*Autori: Davide Ferrari, Matteo Ferrari, Mattia Trabucco*
 
-# Schematic circuit diagram
+# Piedinatura:
 ![piedinatura scheda Arduino Mega](https://github.com/matt498/RFID_project/blob/master/newSchematicRFID.jpg)
 
 
 
 
-# Report Progetto Sistemi Embedded e Real-Time:
+# Report:
 > Gestore portiera auto con lettore carta NFC e rilevamento urti
 
 Lista componenti:
