@@ -200,7 +200,7 @@ void TaskReadRFID(void)
       }
       xSemaphoreGive(mutex); //Release mutex
     }
-    vTaskDelay(1); //TODO: tweak param
+    vTaskDelay(1); 
   }
 }
 
@@ -237,7 +237,7 @@ void TaskDisplay(void)
 
       xSemaphoreGive(mutex); //Release mutex
     }
-    vTaskDelay(1); //TODO: tweak param
+    vTaskDelay(1);
   }
 }
 
@@ -261,7 +261,7 @@ void TaskOpenButton(void)
       }
       xSemaphoreGive(mutex); //Release mutex
     }
-    vTaskDelay(1); //TODO: tweak param
+    vTaskDelay(1); 
   }
 }
 
@@ -285,7 +285,7 @@ void TaskCloseButton(void)
       }
       xSemaphoreGive(mutex); //Release mutex
     }
-    vTaskDelay(1); //TODO: tweak param
+    vTaskDelay(1); 
   }
 }
 
@@ -299,14 +299,14 @@ void TaskVibration(void)
       {
         int val = digitalRead(vibration_PIN); //Read the value from the sensor
 
-        Serial.println(val);
+        //Serial.println(val); Only for debug
 
         if (((xTaskGetTickCount() - tickStart) > tickVALUE) && (tickStart != 0)) //After a certain number of ticks the alarm stops automatically
         {
           noTone(buzzer_PIN); //Stop the beeping
           tickStart = 0;      //Reset the relative tick counter
 
-          Serial.println(xTaskGetTickCount());
+          //Serial.println(xTaskGetTickCount()); Only for debug
         }
 
         if ((val == 1) && (tickStart == 0)) //If there's a vibration detected
@@ -316,7 +316,7 @@ void TaskVibration(void)
 
           lcdImpact = true; //Set the flag for printing on display
 
-          Serial.println(tickStart);
+          //Serial.println(tickStart);  Only for debug
         }
       }
       xSemaphoreGive(mutex); //Release mutex
