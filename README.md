@@ -1,4 +1,4 @@
-# Accesso keyless per auto con lettore NFC e rilevamento urti
+# Accesso keyless per auto via NFC con rilevamento urti
 
 > Progetto Arduino Mega per la gestione dell'accesso keyless ad un'automobile attraverso un lettore NFC integrando un allarme basato sul rilevamento degli urti.
 
