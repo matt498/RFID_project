@@ -19,8 +19,8 @@
 #define toneHERTZ 500 //Frequency for the buzzer tone
 
 //Buttons definitions
-const int openPin = 2;
-const int closePin = 3;
+#define openPin 2
+#define closePin 3
 
 //Task definitions
 void TaskReadRFID(void);
@@ -147,7 +147,7 @@ void TaskReadRFID(void)
 {
   for (;;)
   {
-    if (xSemaphoreTake(mutex, 10) == pdTRUE) //We need to check for mutual exclusion
+    if (xSemaphoreTake(mutex, 10) == pdTRUE) //We need to check for mutual exclusion. If the semaphore is not available wait 10 ticks to see if it becomes free.
     {
       if (mfrc522.PICC_IsNewCardPresent() == true) //Vendor-specific function that tells if there's a card within the range
       {
